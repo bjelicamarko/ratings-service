@@ -1,0 +1,2 @@
+# ratings-service
+Devops Project
