@@ -45,5 +45,5 @@ jobs:
     - name: Build and Push Docker image
       working-directory: ./RatingsService
       run: |
-        docker build -t markodocker2022/ratings-service:v1 .
-        docker push markodocker2022/ratings-service:v1
+        docker build -t markodocker2022/ratings-service:v1.0.${{github.run_number}} .
+        docker push markodocker2022/ratings-service:v1.0.${{github.run_number}} 
