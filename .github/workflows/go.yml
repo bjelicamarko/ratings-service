@@ -1,6 +1,3 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
-
 name: Go
 
 on:
@@ -13,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+          fetch-depth: 0  
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -31,3 +30,8 @@ jobs:
       working-directory: ./RatingsService
       run: go test ./...
 
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
