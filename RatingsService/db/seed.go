@@ -6,15 +6,19 @@ import (
 	"gorm.io/gorm"
 )
 
-var Ratings = []models.Rating{
+var Ratings = []models.AccommodationRating{
 	{
-		Model:   gorm.Model{},
-		Mark:    5,
-		Comment: "onako",
+		Model:           gorm.Model{},
+		Mark:            5,
+		Comment:         "onako",
+		GuestId:         1,
+		AccommodationId: 1,
 	},
 	{
-		Model:   gorm.Model{},
-		Mark:    4,
-		Comment: "odlicno",
+		Model:           gorm.Model{},
+		Mark:            4,
+		Comment:         "odlicno",
+		GuestId:         1,
+		AccommodationId: 1,
 	},
 }

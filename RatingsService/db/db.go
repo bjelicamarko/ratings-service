@@ -29,8 +29,18 @@ func Init() *gorm.DB {
 			log.Println("Database connection successfully created.")
 		}
 
-		db.Migrator().DropTable("ratings")
-		db.Migrator().AutoMigrate(&models.Rating{})
+		db.Migrator().DropTable("accommodation_ratings")
+		db.Migrator().AutoMigrate(&models.AccommodationRating{})
+
+		// rawSql := "ALTER TABLE ratings ADD CONSTRAINT saga_status_check CHECK (status IN ('PENDING', 'ACCEPTED'));"
+		// err = db.Exec(rawSql).Error
+		// if err != nil {
+		// 	log.Println("Cannot execute saga_status_check constraint creation query...")
+		// 	panic(err)
+		// }
+
+		db.Migrator().DropTable("messages")
+		db.Migrator().AutoMigrate(&models.Message{})
 
 		for _, rating := range Ratings {
 			db.Create(&rating)

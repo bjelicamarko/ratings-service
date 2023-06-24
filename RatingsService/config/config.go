@@ -8,11 +8,14 @@ import (
 )
 
 type Config struct {
-	Host     string `env:"HOST,required" envDefault:"localhost"`
-	User     string `env:"USER,required"`
-	Password string `env:"PASSWORD,required"`
-	DbName   string `env:"DBNAME,required"`
-	Port     string `env:"PORT,required"`
+	Host              string `env:"HOST,required" envDefault:"localhost"`
+	User              string `env:"USER,required"`
+	Password          string `env:"PASSWORD,required"`
+	DbName            string `env:"DBNAME,required"`
+	Port              string `env:"PORT,required"`
+	RabbitMqUrl       string `env:"RABBIT_MQ_URL,required"`
+	RatingsQueue      string `env:"RATINGS_QUEUE,required"`
+	ReservationsQueue string `env:"RESERVATIONS_QUEUE,required"`
 }
 
 func ReturnConfig() Config {
