@@ -35,3 +35,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
+    - name: Login to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and Push Docker image
+      working-directory: ./RatingsService
+      run: |
+        docker build -t markodocker2022/ratings-service:v1.0.${{github.run_number}} .
+        docker push markodocker2022/ratings-service:v1.0.${{github.run_number}} 
