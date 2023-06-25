@@ -38,10 +38,10 @@ func MapRoutesAndServe(handler *handlers.RatingsHandler) {
 	} else {
 		log.Println("Server is running without tracing.")
 
-		router.HandleFunc("/add-rating", func(w http.ResponseWriter, r *http.Request) {
+		router.HandleFunc("/add-accommodation-rating", func(w http.ResponseWriter, r *http.Request) {
 			settingTotalRequestsAndVisitors(r)
 
-			span, _ := opentracing.StartSpanFromContext(r.Context(), "/reservations")
+			span, _ := opentracing.StartSpanFromContext(r.Context(), "/add-accommodation-rating")
 			defer span.Finish()
 
 			handler.AddAccommodationRating(w, r)
@@ -49,10 +49,10 @@ func MapRoutesAndServe(handler *handlers.RatingsHandler) {
 			addingTraffics(r, &w)
 		}).Methods(http.MethodPost)
 
-		router.HandleFunc("/update-rating", func(w http.ResponseWriter, r *http.Request) {
+		router.HandleFunc("/update-accommodation-rating", func(w http.ResponseWriter, r *http.Request) {
 			settingTotalRequestsAndVisitors(r)
 
-			span, _ := opentracing.StartSpanFromContext(r.Context(), "/update-rating")
+			span, _ := opentracing.StartSpanFromContext(r.Context(), "/update-accommodation-rating")
 			defer span.Finish()
 
 			handler.UpdateAccommodationRating(w, r)
@@ -60,13 +60,47 @@ func MapRoutesAndServe(handler *handlers.RatingsHandler) {
 			addingTraffics(r, &w)
 		}).Methods(http.MethodPut)
 
-		router.HandleFunc("/ratings/{id}", func(w http.ResponseWriter, r *http.Request) {
+		router.HandleFunc("/accommodation-ratings/{id}", func(w http.ResponseWriter, r *http.Request) {
 			settingTotalRequestsAndVisitors(r)
 
-			span, _ := opentracing.StartSpanFromContext(r.Context(), "/ratings/{id}")
+			span, _ := opentracing.StartSpanFromContext(r.Context(), "/accommodation-ratings/{id}")
 			defer span.Finish()
 
 			handler.DeleteAccommodationRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodDelete)
+
+		// host
+		router.HandleFunc("/add-host-rating", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			span, _ := opentracing.StartSpanFromContext(r.Context(), "/add-host-rating")
+			defer span.Finish()
+
+			handler.AddHostRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodPost)
+
+		router.HandleFunc("/update-host-rating", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			span, _ := opentracing.StartSpanFromContext(r.Context(), "/update-host-rating")
+			defer span.Finish()
+
+			handler.UpdateHostRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodPut)
+
+		router.HandleFunc("/host-ratings/{id}", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			span, _ := opentracing.StartSpanFromContext(r.Context(), "/host-ratings/{id}")
+			defer span.Finish()
+
+			handler.DeleteHostRating(w, r)
 
 			addingTraffics(r, &w)
 		}).Methods(http.MethodDelete)

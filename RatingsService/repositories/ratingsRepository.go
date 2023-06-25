@@ -83,15 +83,106 @@ func (repo *RatingsRepository) GetAccommodationRatingById(ratingId uint) (*model
 	return rating, nil
 }
 
-func (repo *RatingsRepository) Update(rating *models.AccommodationRating) error {
-	result := repo.db.Save(rating)
+func (repo *RatingsRepository) DeleteAccommodationRating(id uint) (*models.AccommodationRating, error) {
+	var deletedAccommodationRating models.AccommodationRating
+	result := repo.db.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&deletedAccommodationRating)
 
 	if result.Error != nil {
-		return result.Error
+		return nil, result.Error
 	}
 
-	return nil
+	return &deletedAccommodationRating, nil
 }
+
+func (repo *RatingsRepository) UpdateAccommodationRating(rating *models.AccommodationRating) (*models.AccommodationRating, error) {
+	result := repo.db.Model(&rating).Updates(&rating)
+
+	return rating, result.Error
+}
+
+//// host ratings
+
+func (repo *RatingsRepository) CreateHostRating(ratingDTO *models.HostRatingDTO) (*models.HostRating, error) {
+	rating := ratingDTO.ToHostRating()
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		result := repo.db.Model(&rating).Create(&rating)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		message, err := createMessage("ADD_HOST_RATING_INITIATED", models.AddHostRatingInitiated{GuestId: rating.GuestId,
+			HostId: rating.HostId, RatingId: rating.ID})
+		if err != nil {
+			return err
+		}
+
+		result = repo.db.Table("messages").Create(&message)
+		if result.Error != nil {
+			return errors.New("error while creating event for create of host rating")
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &rating, nil
+}
+
+func (repo *RatingsRepository) HasUserAlreadyRatedHost(guestId uint, hostId uint) (bool, error) {
+	var resCount int64
+
+	result := repo.db.Table("host_ratings").
+		Where("deleted_at IS NULL").
+		Where("guest_id = ?", guestId).
+		Where("host_id = ?", hostId).
+		Where("status != ?", models.REJECTED).
+		Count(&resCount)
+
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return resCount > 0, nil
+}
+
+func (repo *RatingsRepository) GetHostRatingById(ratingId uint) (*models.HostRating, error) {
+	var rating *models.HostRating
+
+	result := repo.db.First(&rating, ratingId).Where("deleted_at IS NULL")
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if rating == nil {
+		errorMessage := fmt.Sprintf("rating not found by id=%d", ratingId)
+		return nil, errors.New(errorMessage)
+	}
+
+	return rating, nil
+}
+
+func (repo *RatingsRepository) DeleteHostRating(id uint) (*models.HostRating, error) {
+	var deletedHostRating models.HostRating
+	result := repo.db.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&deletedHostRating)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &deletedHostRating, nil
+}
+
+func (repo *RatingsRepository) UpdateHostRating(rating *models.HostRating) (*models.HostRating, error) {
+	result := repo.db.Model(&rating).Updates(&rating)
+
+	return rating, result.Error
+}
+
+////
 
 func createMessage(messageType models.MessageType, body interface{}) (*models.Message, error) {
 	marshalled, err := json.Marshal(body)
@@ -118,32 +209,4 @@ func (repo *RatingsRepository) PublishMessage(message *models.Message) error {
 	}
 
 	return nil
-}
-
-func (repo *RatingsRepository) FindAccommodationRatingById(id uint) (*models.AccommodationRating, error) {
-	var rating models.AccommodationRating
-	result := repo.db.Where("id = ?", id).First(&rating)
-
-	if result.Error != nil {
-		return nil, errors.New("accommodation rating cannot be found")
-	}
-
-	return &rating, nil
-}
-
-func (repo *RatingsRepository) DeleteAccommodationRating(id uint) (*models.AccommodationRating, error) {
-	var deletedAccommodationRating models.AccommodationRating
-	result := repo.db.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&deletedAccommodationRating)
-
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	return &deletedAccommodationRating, nil
-}
-
-func (repo *RatingsRepository) UpdateAccommodationRating(rating *models.AccommodationRating) (*models.AccommodationRating, error) {
-	result := repo.db.Model(&rating).Updates(&rating)
-
-	return rating, result.Error
 }

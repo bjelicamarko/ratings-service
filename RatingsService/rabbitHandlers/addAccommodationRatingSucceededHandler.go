@@ -30,7 +30,7 @@ func AddAccommodationRatingSucceededHandler(message *models.Message, repository 
 
 	rating.Status = models.ACCEPTED
 
-	err = repository.Update(rating)
+	_, err = repository.UpdateAccommodationRating(rating)
 	if err != nil {
 		handleSucceededError(message.ID, err)
 		return

@@ -32,7 +32,7 @@ func (rating *HostRating) ToHostRatingDTO() HostRatingDTO {
 	}
 }
 
-func (ratingDTO *HostRating) ToHostRating() HostRating {
+func (ratingDTO *HostRatingDTO) ToHostRating() HostRating {
 	return HostRating{
 		Model:   gorm.Model{},
 		Mark:    ratingDTO.Mark,

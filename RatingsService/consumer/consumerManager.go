@@ -14,6 +14,9 @@ import (
 var typeHandlerMap = map[models.MessageType]func(*models.Message, *repositories.RatingsRepository){
 	models.ADD_ACCOMMODATION_RATING_SUCCEEDED: rabbitHandlers.AddAccommodationRatingSucceededHandler,
 	models.ADD_ACCOMMODATION_RATING_FAILED:    rabbitHandlers.AddAccommodationRatingFailedHandler,
+
+	models.ADD_HOST_RATING_SUCCEEDED: rabbitHandlers.AddHostRatingSucceededHandler,
+	models.ADD_HOST_RATING_FAILED:    rabbitHandlers.AddHostRatingFailedHandler,
 }
 
 func InvokeHandler(data []byte, repository *repositories.RatingsRepository) {

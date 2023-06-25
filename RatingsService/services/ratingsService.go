@@ -55,7 +55,7 @@ func (rs *RatingsService) DeleteAccommodationRating(ratingId uint) (*models.Acco
 }
 
 func (rs *RatingsService) UpdateAccommodationRating(updateRating *models.UpdateAccommodationRatingDTO) (*models.AccommodationRatingDTO, error) {
-	rating, err := rs.repository.FindAccommodationRatingById(updateRating.Id)
+	rating, err := rs.repository.GetAccommodationRatingById(updateRating.Id)
 
 	if err != nil {
 		return nil, err
@@ -76,5 +76,69 @@ func (rs *RatingsService) UpdateAccommodationRating(updateRating *models.UpdateA
 	}
 
 	retValue := rating.ToAccommodationRatingDTO()
+	return &retValue, nil
+}
+
+// / host
+func (rs *RatingsService) AddHostRating(ratingDTO *models.HostRatingDTO, guestId uint) (*models.HostRatingDTO, error) {
+	validate := validator.New()
+	err := validate.Struct(ratingDTO)
+	if err != nil {
+		return nil, err
+	}
+	ratingDTO.GuestId = guestId
+
+	already_rated, err := rs.repository.HasUserAlreadyRatedHost(guestId, ratingDTO.HostId)
+	if err != nil {
+		return nil, err
+	}
+
+	if already_rated {
+		return nil, errors.New("user has already rated the host")
+	}
+
+	rating, err := rs.repository.CreateHostRating(ratingDTO)
+
+	if err != nil {
+		return nil, err
+	}
+
+	retValue := rating.ToHostRatingDTO()
+	return &retValue, nil
+}
+
+func (rs *RatingsService) DeleteHostRating(ratingId uint) (*models.HostRatingDTO, error) {
+	rating, err := rs.repository.DeleteHostRating(ratingId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	retValue := rating.ToHostRatingDTO()
+	return &retValue, nil
+}
+
+func (rs *RatingsService) UpdateHostRating(updateRating *models.UpdateHostRatingDTO) (*models.HostRatingDTO, error) {
+	rating, err := rs.repository.GetHostRatingById(updateRating.Id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	validate := validator.New()
+	err = validate.Struct(updateRating)
+	if err != nil {
+		return nil, err
+	}
+
+	rating.Mark = updateRating.Mark
+	rating.Comment = updateRating.Comment
+
+	rating, err = rs.repository.UpdateHostRating(rating)
+	if err != nil {
+		return nil, err
+	}
+
+	retValue := rating.ToHostRatingDTO()
 	return &retValue, nil
 }

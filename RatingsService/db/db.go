@@ -32,6 +32,9 @@ func Init() *gorm.DB {
 		db.Migrator().DropTable("accommodation_ratings")
 		db.Migrator().AutoMigrate(&models.AccommodationRating{})
 
+		db.Migrator().DropTable("host_ratings")
+		db.Migrator().AutoMigrate(&models.HostRating{})
+
 		// rawSql := "ALTER TABLE ratings ADD CONSTRAINT saga_status_check CHECK (status IN ('PENDING', 'ACCEPTED'));"
 		// err = db.Exec(rawSql).Error
 		// if err != nil {
@@ -43,6 +46,10 @@ func Init() *gorm.DB {
 		db.Migrator().AutoMigrate(&models.Message{})
 
 		for _, rating := range Ratings {
+			db.Create(&rating)
+		}
+
+		for _, rating := range HostRatings {
 			db.Create(&rating)
 		}
 
