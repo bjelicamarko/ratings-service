@@ -119,6 +119,34 @@ func (uh *RatingsHandler) UpdateAccommodationRating(w http.ResponseWriter, r *ht
 	returnResponse("Update of accommodation rating succeeded", body, &w)
 }
 
+func (uh *RatingsHandler) GetAccommodationsRatings(w http.ResponseWriter, r *http.Request) {
+	log.Println("Get accommodations ratings is called.")
+
+	vars := mux.Vars(r)
+	accommRatingId := vars["id"]
+
+	accommId, err := strconv.ParseUint(accommRatingId, 10, 32)
+	if err != nil {
+		returnError(err, http.StatusBadRequest, models.AccommodationRatingDTOMessage{Message: err.Error()}, &w)
+		return
+	}
+
+	ratings, err := uh.service.GetRatingsForAccommodation(uint(accommId))
+
+	if err != nil {
+		returnError(err, http.StatusBadRequest, models.AccommodationRatingDTOMessage{Message: err.Error()}, &w)
+		return
+	}
+
+	body, err := json.Marshal(ratings)
+	if err != nil {
+		returnError(err, http.StatusInternalServerError, models.AccommodationRatingDTOMessage{Message: err.Error()}, &w)
+		return
+	}
+
+	returnResponse("Get of accommodation rating succeeded", body, &w)
+}
+
 // / host
 func (ah *RatingsHandler) AddHostRating(w http.ResponseWriter, r *http.Request) {
 	log.Println("AddHostRating is called.")
@@ -197,4 +225,32 @@ func (uh *RatingsHandler) UpdateHostRating(w http.ResponseWriter, r *http.Reques
 	}
 
 	returnResponse("Update of accommodation rating succeeded", body, &w)
+}
+
+func (uh *RatingsHandler) GetHostsRatings(w http.ResponseWriter, r *http.Request) {
+	log.Println("Get hosts ratings is called.")
+
+	vars := mux.Vars(r)
+	hostId := vars["id"]
+
+	hostIder, err := strconv.ParseUint(hostId, 10, 32)
+	if err != nil {
+		returnError(err, http.StatusBadRequest, models.HostRatingDTOMessage{Message: err.Error()}, &w)
+		return
+	}
+
+	ratings, err := uh.service.GetRatingsForHost(uint(hostIder))
+
+	if err != nil {
+		returnError(err, http.StatusBadRequest, models.HostRatingDTOMessage{Message: err.Error()}, &w)
+		return
+	}
+
+	body, err := json.Marshal(ratings)
+	if err != nil {
+		returnError(err, http.StatusInternalServerError, models.HostRatingDTOMessage{Message: err.Error()}, &w)
+		return
+	}
+
+	returnResponse("Get of host rating succeeded", body, &w)
 }

@@ -100,6 +100,22 @@ func (repo *RatingsRepository) UpdateAccommodationRating(rating *models.Accommod
 	return rating, result.Error
 }
 
+func (repo *RatingsRepository) GetRatingsForAccommodation(accommodationId uint) ([]*models.AccommodationRating, error) {
+	var ratings []*models.AccommodationRating
+
+	result := repo.db.Table("accommodation_ratings").
+		Where("deleted_at IS NULL").
+		Where("accommodation_id = ?", accommodationId).
+		Where("status = ?", models.ACCEPTED).
+		Find(&ratings)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return ratings, nil
+}
+
 //// host ratings
 
 func (repo *RatingsRepository) CreateHostRating(ratingDTO *models.HostRatingDTO) (*models.HostRating, error) {
@@ -180,6 +196,22 @@ func (repo *RatingsRepository) UpdateHostRating(rating *models.HostRating) (*mod
 	result := repo.db.Model(&rating).Updates(&rating)
 
 	return rating, result.Error
+}
+
+func (repo *RatingsRepository) GetRatingsForHost(hostId uint) ([]*models.HostRating, error) {
+	var ratings []*models.HostRating
+
+	result := repo.db.Table("host_ratings").
+		Where("deleted_at IS NULL").
+		Where("host_id = ?", hostId).
+		Where("status = ?", models.ACCEPTED).
+		Find(&ratings)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return ratings, nil
 }
 
 ////

@@ -12,6 +12,22 @@ func (rating *AccommodationRating) ToAccommodationRatingDTO() AccommodationRatin
 	}
 }
 
+func (rating *AccommodationRating) ToAccommodationRatingForViewDTO() AccommodationRatingForViewDTO {
+	accView := AccommodationRatingForViewDTO{
+		Id:              rating.ID,
+		Mark:            rating.Mark,
+		Comment:         rating.Comment,
+		GuestId:         rating.GuestId,
+		AccommodationId: rating.AccommodationId,
+	}
+	if rating.UpdatedAt.IsZero() {
+		accView.DateAdded = rating.UpdatedAt
+	} else {
+		accView.DateAdded = rating.CreatedAt
+	}
+	return accView
+}
+
 func (ratingDTO *AccommodationRatingDTO) ToAccommodationRating() AccommodationRating {
 	return AccommodationRating{
 		Model:           gorm.Model{},
@@ -40,4 +56,20 @@ func (ratingDTO *HostRatingDTO) ToHostRating() HostRating {
 		GuestId: ratingDTO.GuestId,
 		HostId:  ratingDTO.HostId,
 	}
+}
+
+func (rating *HostRating) ToHostRatingForViewDTO() HostRatingForViewDTO {
+	accView := HostRatingForViewDTO{
+		Id:      rating.ID,
+		Mark:    rating.Mark,
+		Comment: rating.Comment,
+		GuestId: rating.GuestId,
+		HostId:  rating.HostId,
+	}
+	if rating.UpdatedAt.IsZero() {
+		accView.DateAdded = rating.UpdatedAt
+	} else {
+		accView.DateAdded = rating.CreatedAt
+	}
+	return accView
 }
