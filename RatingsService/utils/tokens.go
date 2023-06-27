@@ -34,9 +34,9 @@ func GetClaimsFromHeader(r *http.Request) (*Claims, error) {
 
 	tokenStr := strings.Split(bearer[0], " ")[1]
 	token, err := ParseTokenStr(tokenStr)
-	// if err != nil { TODO OVO fix
-	// 	return nil, errors.New("invalid token")
-	// }
+	if err != nil {
+		return nil, errors.New("invalid token")
+	}
 	claims := token.Claims.(jwt.MapClaims)
 	id_str := fmt.Sprintf("%v", claims["Id"])
 	role_str := fmt.Sprintf("%v", claims["Role"])

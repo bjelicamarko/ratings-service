@@ -79,6 +79,22 @@ func (rs *RatingsService) UpdateAccommodationRating(updateRating *models.UpdateA
 	return &retValue, nil
 }
 
+func (rs *RatingsService) GetRatingsForAccommodation(accommodationId uint) ([]*models.AccommodationRatingForViewDTO, error) {
+	ratings, err := rs.repository.GetRatingsForAccommodation(accommodationId)
+	var ratingsDTO []*models.AccommodationRatingForViewDTO
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, rating := range ratings {
+		nesto := rating.ToAccommodationRatingForViewDTO()
+		ratingsDTO = append(ratingsDTO, &nesto)
+	}
+
+	return ratingsDTO, nil
+}
+
 // / host
 func (rs *RatingsService) AddHostRating(ratingDTO *models.HostRatingDTO, guestId uint) (*models.HostRatingDTO, error) {
 	validate := validator.New()
@@ -141,4 +157,20 @@ func (rs *RatingsService) UpdateHostRating(updateRating *models.UpdateHostRating
 
 	retValue := rating.ToHostRatingDTO()
 	return &retValue, nil
+}
+
+func (rs *RatingsService) GetRatingsForHost(hostId uint) ([]*models.HostRatingForViewDTO, error) {
+	ratings, err := rs.repository.GetRatingsForHost(hostId)
+	var ratingsDTO []*models.HostRatingForViewDTO
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, rating := range ratings {
+		nesto := rating.ToHostRatingForViewDTO()
+		ratingsDTO = append(ratingsDTO, &nesto)
+	}
+
+	return ratingsDTO, nil
 }

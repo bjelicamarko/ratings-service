@@ -1,11 +1,22 @@
 package models
 
+import "time"
+
 type AccommodationRatingDTO struct {
 	Id              uint   `json:"Id"`
 	Mark            int    `json:"Mark" validate:"min=1,max=5"`
 	Comment         string `json:"Comment"`
 	GuestId         uint   `json:"GuestId"`
 	AccommodationId uint   `json:"AccommodationId"`
+}
+
+type AccommodationRatingForViewDTO struct {
+	Id              uint      `json:"Id"`
+	Mark            int       `json:"Mark" validate:"min=1,max=5"`
+	Comment         string    `json:"Comment"`
+	GuestId         uint      `json:"GuestId"`
+	AccommodationId uint      `json:"AccommodationId"`
+	DateAdded       time.Time `json:"DateAdded"`
 }
 
 type AccommodationRatingDTOMessage struct {
@@ -36,4 +47,13 @@ type UpdateHostRatingDTO struct {
 	Id      uint   `json:"Id"`
 	Mark    int    `json:"Mark" validate:"min=1,max=5"`
 	Comment string `json:"Comment"`
+}
+
+type HostRatingForViewDTO struct {
+	Id        uint      `json:"Id"`
+	Mark      int       `json:"Mark" validate:"min=1,max=5"`
+	Comment   string    `json:"Comment"`
+	GuestId   uint      `json:"GuestId"`
+	HostId    uint      `json:"HostId"`
+	DateAdded time.Time `json:"DateAdded"`
 }
