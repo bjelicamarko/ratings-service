@@ -8,6 +8,7 @@ func (rating *AccommodationRating) ToAccommodationRatingDTO() AccommodationRatin
 		Mark:            rating.Mark,
 		Comment:         rating.Comment,
 		GuestId:         rating.GuestId,
+		HostId:          rating.HostId,
 		AccommodationId: rating.AccommodationId,
 	}
 }
@@ -18,6 +19,7 @@ func (rating *AccommodationRating) ToAccommodationRatingForViewDTO() Accommodati
 		Mark:            rating.Mark,
 		Comment:         rating.Comment,
 		GuestId:         rating.GuestId,
+		HostId:          rating.HostId,
 		AccommodationId: rating.AccommodationId,
 	}
 	if rating.UpdatedAt.IsZero() {
@@ -34,6 +36,7 @@ func (ratingDTO *AccommodationRatingDTO) ToAccommodationRating() AccommodationRa
 		Mark:            ratingDTO.Mark,
 		Comment:         ratingDTO.Comment,
 		GuestId:         ratingDTO.GuestId,
+		HostId:          ratingDTO.HostId,
 		AccommodationId: ratingDTO.AccommodationId,
 	}
 }

@@ -28,7 +28,7 @@ func (repo *RatingsRepository) CreateAccommodationRating(ratingDTO *models.Accom
 			return result.Error
 		}
 
-		message, err := createMessage("ADD_ACCOMMODATION_RATING_INITIATED", models.AddAccommodationRatingInitiated{GuestId: rating.GuestId,
+		message, err := CreateMessage("ADD_ACCOMMODATION_RATING_INITIATED", models.AddAccommodationRatingInitiated{GuestId: rating.GuestId,
 			AccommodationId: rating.AccommodationId, RatingId: rating.ID})
 		if err != nil {
 			return err
@@ -126,7 +126,7 @@ func (repo *RatingsRepository) CreateHostRating(ratingDTO *models.HostRatingDTO)
 			return result.Error
 		}
 
-		message, err := createMessage("ADD_HOST_RATING_INITIATED", models.AddHostRatingInitiated{GuestId: rating.GuestId,
+		message, err := CreateMessage("ADD_HOST_RATING_INITIATED", models.AddHostRatingInitiated{GuestId: rating.GuestId,
 			HostId: rating.HostId, RatingId: rating.ID})
 		if err != nil {
 			return err
@@ -214,9 +214,53 @@ func (repo *RatingsRepository) GetRatingsForHost(hostId uint) ([]*models.HostRat
 	return ratings, nil
 }
 
+func (repo *RatingsRepository) CreateNotificationAccommodationRated(rating *models.AccommodationRating) error {
+	message, err := CreateMessage(
+		models.RATED_ACCOMMODATION,
+		models.NotificationsMessage{
+			IdUser: rating.HostId,
+			Message: fmt.Sprintf("Guest %d rated accommodation %d with %d",
+				rating.GuestId, rating.AccommodationId, rating.Mark),
+		},
+	)
+
+	if err != nil {
+		return err
+	}
+
+	result := repo.db.Table("messages").Create(&message)
+	if result.Error != nil {
+		return errors.New("error while creating notification")
+	}
+
+	return nil
+}
+
+func (repo *RatingsRepository) CreateNotificationHostRated(rating *models.HostRating) error {
+	message, err := CreateMessage(
+		models.RATED_HOST,
+		models.NotificationsMessage{
+			IdUser: rating.HostId,
+			Message: fmt.Sprintf("Guest %d rated you with %d",
+				rating.GuestId, rating.Mark),
+		},
+	)
+
+	if err != nil {
+		return err
+	}
+
+	result := repo.db.Table("messages").Create(&message)
+	if result.Error != nil {
+		return errors.New("error while creating notification")
+	}
+
+	return nil
+}
+
 ////
 
-func createMessage(messageType models.MessageType, body interface{}) (*models.Message, error) {
+func CreateMessage(messageType models.MessageType, body interface{}) (*models.Message, error) {
 	marshalled, err := json.Marshal(body)
 
 	if err != nil {

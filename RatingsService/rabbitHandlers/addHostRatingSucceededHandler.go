@@ -36,6 +36,11 @@ func AddHostRatingSucceededHandler(message *models.Message, repository *reposito
 		return
 	}
 
+	err = repository.CreateNotificationHostRated(rating)
+	if err != nil {
+		return
+	}
+
 	log.Printf("Successfully added host rating with id: [%d] for host: [%d] and guest: [%d]", rating.ID, rating.HostId, rating.GuestId)
 	// Notify user through web socket
 }

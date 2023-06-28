@@ -36,6 +36,10 @@ func AddAccommodationRatingSucceededHandler(message *models.Message, repository 
 		return
 	}
 
+	err = repository.CreateNotificationAccommodationRated(rating)
+	if err != nil {
+		return
+	}
 	log.Printf("Successfully added accommodation rating with id: [%d] for accommodation: [%d] and guest: [%d]", rating.ID, rating.AccommodationId, rating.GuestId)
 	// Notify user through web socket
 }

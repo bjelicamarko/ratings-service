@@ -35,8 +35,6 @@ func MapRoutesAndServe(handler *handlers.RatingsHandler) {
 
 	if os.Getenv("HOST") != "localhost" && os.Getenv("MONITORING") != "OFF" { // ako nije localhost i ako nije ukljucen monitoring
 		log.Println("Server is running with tracing.")
-	} else {
-		log.Println("Server is running without tracing.")
 
 		router.HandleFunc("/ratings/add-accommodation-rating", func(w http.ResponseWriter, r *http.Request) {
 			settingTotalRequestsAndVisitors(r)
@@ -121,6 +119,74 @@ func MapRoutesAndServe(handler *handlers.RatingsHandler) {
 
 			span, _ := opentracing.StartSpanFromContext(r.Context(), "/ratings/get-ratings-for-host/{id}")
 			defer span.Finish()
+
+			handler.GetHostsRatings(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodGet)
+
+	} else {
+		log.Println("Server is running without tracing.")
+
+		router.HandleFunc("/ratings/add-accommodation-rating", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			handler.AddAccommodationRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodPost)
+
+		router.HandleFunc("/ratings/update-accommodation-rating", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			handler.UpdateAccommodationRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodPut)
+
+		router.HandleFunc("/ratings/accommodation-ratings/{id}", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			handler.DeleteAccommodationRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodDelete)
+
+		router.HandleFunc("/ratings/get-ratings-for-accommodation/{id}", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			handler.GetAccommodationsRatings(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodGet)
+
+		// host
+		router.HandleFunc("/ratings/add-host-rating", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			handler.AddHostRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodPost)
+
+		router.HandleFunc("/ratings/update-host-rating", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			handler.UpdateHostRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodPut)
+
+		router.HandleFunc("/ratings/host-ratings/{id}", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
+
+			handler.DeleteHostRating(w, r)
+
+			addingTraffics(r, &w)
+		}).Methods(http.MethodDelete)
+
+		router.HandleFunc("/ratings/get-ratings-for-host/{id}", func(w http.ResponseWriter, r *http.Request) {
+			settingTotalRequestsAndVisitors(r)
 
 			handler.GetHostsRatings(w, r)
 
