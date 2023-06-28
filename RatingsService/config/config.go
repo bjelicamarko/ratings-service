@@ -14,8 +14,8 @@ type Config struct {
 	DbName             string `env:"DBNAME,required"`
 	Port               string `env:"PORT,required"`
 	RabbitMqUrl        string `env:"RABBIT_MQ_URL,required"`
-	RatingsQueue       string `env:"RATINGS_QUEUE,required"`
-	ReservationsQueue  string `env:"RESERVATIONS_QUEUE,required"`
+	RatingsQueue       string `env:"RATING_QUEUE,required"`
+	ReservationsQueue  string `env:"RESERVATION_QUEUE,required"`
 	NotificationsQueue string `env:"NOTIFICATION_QUEUE,required"`
 }
 
