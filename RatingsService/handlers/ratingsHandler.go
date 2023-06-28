@@ -50,7 +50,7 @@ func (ah *RatingsHandler) AddAccommodationRating(w http.ResponseWriter, r *http.
 	}
 
 	var ratingDTO models.AccommodationRatingDTO
-	ratingDTO.HostId = 1
+
 	err = json.NewDecoder(r.Body).Decode(&ratingDTO)
 	if err != nil {
 		returnError(err, http.StatusBadRequest, models.AccommodationRatingDTOMessage{Message: err.Error()}, &w)
