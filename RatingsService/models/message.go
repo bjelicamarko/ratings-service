@@ -24,6 +24,9 @@ const (
 	ADD_HOST_RATING_INITIATED MessageType = "ADD_HOST_RATING_INITIATED"
 	ADD_HOST_RATING_SUCCEEDED MessageType = "ADD_HOST_RATING_SUCCEEDED"
 	ADD_HOST_RATING_FAILED    MessageType = "ADD_HOST_RATING_FAILED"
+
+	RATED_HOST          MessageType = "RATED_HOST"
+	RATED_ACCOMMODATION MessageType = "RATED_ACCOMMODATION"
 )
 
 // ********** MessageBodyTypesForPublishing ********** //
@@ -38,4 +41,9 @@ type AddHostRatingInitiated struct {
 	GuestId  uint `json:"GuestId"`
 	HostId   uint `json:"HostId"`
 	RatingId uint `json:"RatingId"`
+}
+
+type NotificationsMessage struct {
+	IdUser  uint   `json:"idUser"`
+	Message string `json:"message"`
 }

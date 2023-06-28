@@ -7,6 +7,7 @@ type AccommodationRatingDTO struct {
 	Mark            int    `json:"Mark" validate:"min=1,max=5"`
 	Comment         string `json:"Comment"`
 	GuestId         uint   `json:"GuestId"`
+	HostId          uint   `json:"HostId"`
 	AccommodationId uint   `json:"AccommodationId"`
 }
 
@@ -15,6 +16,7 @@ type AccommodationRatingForViewDTO struct {
 	Mark            int       `json:"Mark" validate:"min=1,max=5"`
 	Comment         string    `json:"Comment"`
 	GuestId         uint      `json:"GuestId"`
+	HostId          uint      `json:"HostId"`
 	AccommodationId uint      `json:"AccommodationId"`
 	DateAdded       time.Time `json:"DateAdded"`
 }
